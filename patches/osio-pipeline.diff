@@ -1,0 +1,50 @@
+diff --git c/src/io/openshift/Plugins.groovy w/src/io/openshift/Plugins.groovy
+index 34620eb..8e9cfe1 100644
+--- c/src/io/openshift/Plugins.groovy
++++ w/src/io/openshift/Plugins.groovy
+@@ -3,7 +3,7 @@ import io.openshift.plugins.*
+ 
+ class Plugins implements Serializable {
+     static def register() {
+-      new analytics().register()
++      //new analytics().register()
+     }
+ }
+ 
+diff --git c/vars/build.groovy w/vars/build.groovy
+index f19383f..feb0b79 100644
+--- c/vars/build.groovy
++++ w/vars/build.groovy
+@@ -61,6 +61,14 @@ def createImageStream(imageStreams, namespace) {
+ def buildProject(buildConfigs, namespace) {
+     buildConfigs.each { buildConfig ->
+         Utils.ocApply(this, buildConfig, namespace)
+-        openshiftBuild(buildConfig: "${buildConfig.metadata.name}", showBuildLogs: 'true')
++        Utils.shWithOutput(this, "oc start-build ${buildConfig.metadata.name}")
++        // Utils.shWithOutput(this, "oc logs -f bc/${buildConfig.metadata.name}")
++        sh ("oc logs -f bc/${buildConfig.metadata.name}")
++      //   openshift.withCluster() {
++      //     openshift.verbose()
++      //     def bc = openshift.selector('bc/${buildConfig.metadata.name}')
++      //     def buildSelector = bc.startBuild()
++      //     buildSelector.logs('-f')
++      // }
+     }
+ }
+diff --git c/vars/processTemplate.groovy w/vars/processTemplate.groovy
+index 92de89a..0218b0d 100644
+--- c/vars/processTemplate.groovy
++++ w/vars/processTemplate.groovy
+@@ -39,7 +39,11 @@ def applyDefaults(provided=[:], templateParams) {
+   def params = [:]
+   def setParam = { key, compute ->
+     if (key in templateParams) {
+-      params[key] = provided[key] ?: compute()
++      def x = provided.find{ it.key == key }?.value
++      if(x)
++        params[key] = provided[key]
++      else
++        params[key] = compute()
+     }
+   }
+ 
