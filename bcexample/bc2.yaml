@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: "jrbuild-ex"
+spec:
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: http://github.com/chmouel/openshift-build-jr-ex.git
+    type: Git
+  strategy:
+    type: "Source"
+    sourceStrategy:
+        from:
+          kind: "DockerImage"
+          name: "quay.io/chmouel/openshift-jr"

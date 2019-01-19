@@ -1,0 +1,25 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'openshift-jr' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+JENKINS_FILE_RUNNER=/usr/local/jenkins/jr/bin/jenkinsfile-runner
+
+# If the 'openshift-jr' assemble script is executed with the '-h' flag, print the usage.
+if [[ "$1" == "-h" ]]; then
+	exec /usr/libexec/s2i/usage
+fi
+
+# Restore artifacts from the previous build (if they exist).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts..."
+  mv /tmp/artifacts/. ./
+fi
+
+cp -Rf /tmp/src/. ./
+export JAVA_OPTS="-Dpermissive-script-security.enabled=no_security"
+bash ${JENKINS_FILE_RUNNER} -w /usr/local/jenkins/uncompressed -p /usr/local/jenkins/plugins -f ./
