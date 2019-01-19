@@ -10,7 +10,7 @@ CWP_BASE_VERSION=$(CWP_VERSION)
 all: clean build
 
 clean:
-	rm -rf tmp
+	rm -rf tmp jenkins/tmp
 
 .build/cwp-cli-${CWP_VERSION}.jar:
 	rm -rf .build
@@ -22,4 +22,3 @@ clean:
 build: .build/cwp-cli-${CWP_VERSION}.jar
 	java -jar .build/cwp-cli-${CWP_VERSION}.jar \
 	-configPath packager-config.yml
-
