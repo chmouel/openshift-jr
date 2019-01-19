@@ -1,5 +1,6 @@
 FROM fabric8/java-centos-openjdk8-jdk:latest
 
+RUN yum -y install make
 RUN make build
 
 ADD tmp/output/jenkinsfileRunner /usr/local/jenkins/jr
