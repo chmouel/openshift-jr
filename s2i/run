@@ -6,5 +6,5 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
- JAVA_OPTS="-Dpermissive-script-security.enabled=no_security"
-exec asdf -p 8080
+# We are not running this S2I Build
+exit 0
